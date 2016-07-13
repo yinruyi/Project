@@ -11,6 +11,17 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 abspath = os.getcwd()
 
+def writeMatrix(dataset, Path, coding = "utf-8"):
+    for i in xrange(len(dataset)):
+        temp = dataset[i]
+        temp = [str(temp[j]) for j in xrange(len(temp))]
+        temp = ",".join(temp)
+        dataset[i] = temp
+    string = "\n".join(dataset)
+    f = open(Path, "a+")
+    line = f.write(string+"\n")
+    f.close()
+
 def getData():
     file = open("data.json",'r')
     data = json.loads(file.read())
@@ -67,10 +78,33 @@ def clustering_result():
     n = 4# 四类
     kmeans_model = KMeans(n_clusters = n).fit(X)
     labels = kmeans_model.labels_	
-    print labels
+    # print labels[0]==0,type(labels[0])
+    # print len(labels),len(Tag)
+    cluster_n = [0,1,2,3]
+    for i in range(len(cluster_n)):
+    	temp = [cluster_n[i]]
+    	for j in range(len(labels)):
+    		if cluster_n[i] == labels[j]:
+    			temp.append(Tag[j])
+    	writeMatrix([temp],"cluster.txt")
+
+
+def clustering_result2():
+    X,Tag = getData()
+
+    n = 2# 四类
+    kmeans_model = KMeans(n_clusters = n).fit(X)
+    labels = kmeans_model.labels_   
+    # print labels[0]==0,type(labels[0])
+    # print len(labels),len(Tag)
+    print Tag,labels
+    result = []
+    for i in range(len(Tag)):
+        result.append([Tag[i],labels[i]])
+    writeMatrix(result,'2class.txt')
 
 if __name__ == '__main__':
-	clustering_result()
+	clustering_result2()
     
 
 
